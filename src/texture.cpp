@@ -5,7 +5,7 @@
 
 // Path to stb_image.h
 #define STB_IMAGE_IMPLEMENTATION
-#include "../../stb_image.h"
+#include "external/include/stb_image.h"
 
 #include "../include/texture.h"
 
