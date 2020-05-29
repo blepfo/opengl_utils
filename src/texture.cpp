@@ -3,9 +3,8 @@
 
 #include<GL/glew.h>
 
-// Path to stb_image.h
 #define STB_IMAGE_IMPLEMENTATION
-#include "external/include/stb_image.h"
+#include <stb_image.h>
 
 #include "../include/texture.h"
 
