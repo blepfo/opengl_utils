@@ -62,7 +62,6 @@ void Shader::setVec2(const std::string &name, glm::vec2 v) {
 void Shader::setVec3(const std::string &name, glm::vec3 v) {
     unsigned int uniformLocation = glGetUniformLocation(this->programId, name.c_str());
     glUniform3fv(uniformLocation, 1, glm::value_ptr(v));
-
 }
 
 // Return std::string instead of const char* to avoid dealing with allocs

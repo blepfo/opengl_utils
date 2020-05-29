@@ -66,6 +66,10 @@ void Camera::translate(CameraDirection d, bool positive, float deltaTime) {
     }
 }
 
+glm::vec3 Camera::getOrigin() {
+    return this->_origin;
+}
+
 float Camera::getPitch() {
     return this->_pitch;
 }
