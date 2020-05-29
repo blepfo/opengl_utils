@@ -54,6 +54,10 @@ void Shader::setMat4(const std::string &name, glm::mat4 m) {
     glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, glm::value_ptr(m));
 }
 
+void Shader::setVec3(const std::string &name, glm::vec3 v) {
+    unsigned int uniformLocation = glGetUniformLocation(this->programId, name.c_str());
+    glUniform3fv(uniformLocation, 1, glm::value_ptr(v));
+}
 
 // Return std::string instead of const char* to avoid dealing with allocs
 std::string Shader::readFile(const char* path) {
