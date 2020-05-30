@@ -60,8 +60,8 @@ void Camera::updateRotation(float deltaPitch, float deltaYaw) {
                 sin(this->_yaw) * cos(this->_pitch)
             )
         );
-        this->_right = glm::cross(this->_forward, glm::vec3(0.0f, 1.0f, 0.0f));
-        this->_up = glm::cross(this->_forward, this->_right);
+        this->_right = glm::cross(glm::vec3(0.0f, 1.0f, 0.0f), this->_forward);
+        this->_up = glm::cross(this->_right, this->_forward);
     }
 }
 
@@ -135,10 +135,11 @@ void Camera::standardWalkProcessing(Camera* camera, GLFWwindow* window, float de
     if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
         camera->updateRotation(1.0f, 0.0f);
     }
+    // Invert horizontal rotation because higher angle = rotate counterclockwise
     if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
-        camera->updateRotation(0.0f, 1.0f);
+        camera->updateRotation(0.0f, -1.0f);
     }
     if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
-        camera->updateRotation(0.0f, -1.0f);
+        camera->updateRotation(0.0f, 1.0f);
     }
 }
