@@ -42,17 +42,27 @@ void Camera::setRotateSpeed(float rotateSpeed) {
 }
 
 void Camera::updateRotation(float deltaPitch, float deltaYaw) {
-    this->_pitch += deltaPitch * this->_rotateSpeed;
-    this->_yaw += deltaYaw * this->_rotateSpeed;
-    this->_forward = glm::normalize(
-        glm::vec3(
-            cos(this->_yaw) * cos(this->_pitch),
-            sin(this->_pitch),
-            sin(this->_yaw) * cos(this->_pitch)
-        )
-    );
-    this->_right = glm::cross(this->_forward, glm::vec3(0.0f, 1.0f, 0.0f));
-    this->_up = glm::cross(this->_forward, this->_right);
+    bool rotationChanged = false;
+    float pitchUpdate = deltaPitch * this->_rotateSpeed;
+    if (abs(pitchUpdate) > 0.0001)
+        this->_pitch += pitchUpdate;
+        rotationChanged = true;
+    float yawUpdate = deltaYaw * this->_rotateSpeed;
+    if (abs(yawUpdate) > 0.0001) {
+        this->_yaw += yawUpdate;    
+        rotationChanged = true;
+    }
+    if (rotationChanged) {
+        this->_forward = glm::normalize(
+            glm::vec3(
+                cos(this->_yaw) * cos(this->_pitch),
+                sin(this->_pitch),
+                sin(this->_yaw) * cos(this->_pitch)
+            )
+        );
+        this->_right = glm::cross(this->_forward, glm::vec3(0.0f, 1.0f, 0.0f));
+        this->_up = glm::cross(this->_forward, this->_right);
+    }
 }
 
 void Camera::translate(CameraDirection d, bool positive, float deltaTime) {
