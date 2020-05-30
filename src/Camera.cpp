@@ -81,3 +81,15 @@ float Camera::getYaw() {
 glm::mat4 Camera::getView() {
     return glm::lookAt(this->_origin, this->_origin + this->_forward, this->_up);
 }
+
+glm::vec3 Camera::getForward() {
+    return this->_forward;
+}
+
+glm::vec3 Camera::getUp() {
+    return this->_up;
+}
+
+glm::vec3 Camera::getRight() {
+    return this->_right;
+}
