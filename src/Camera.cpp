@@ -103,3 +103,42 @@ glm::vec3 Camera::getUp() {
 glm::vec3 Camera::getRight() {
     return this->_right;
 }
+
+void Camera::standardWalkProcessing(Camera* camera, GLFWwindow* window, float deltaTime) {
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+        glfwSetWindowShouldClose(window, true);
+        std::cout << "ESC KEY -> CLOSE WINDOW" << std::endl;
+    }
+    // Walk input
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+        camera->translate(CameraDirection::FORWARD, true, deltaTime);
+    }
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+        camera->translate(CameraDirection::RIGHT, false, deltaTime);
+    }
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+        camera->translate(CameraDirection::FORWARD, false, deltaTime);
+    }
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+        camera->translate(CameraDirection::RIGHT, true, deltaTime);
+    }
+    if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
+        camera->translate(CameraDirection::UP, false, deltaTime);
+    }
+    if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
+        camera->translate(CameraDirection::UP, true, deltaTime);
+    }
+    // Rotation
+    if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
+        camera->updateRotation(-1.0f, 0.0f);
+    }
+    if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
+        camera->updateRotation(1.0f, 0.0f);
+    }
+    if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
+        camera->updateRotation(0.0f, 1.0f);
+    }
+    if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
+        camera->updateRotation(0.0f, -1.0f);
+    }
+}

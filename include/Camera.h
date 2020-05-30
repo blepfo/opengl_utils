@@ -1,6 +1,7 @@
 #ifndef _CAMERA_H
 #define _CAMERA_H
 
+#include<GLFW/glfw3.h>
 #include<glm/glm.hpp>
 
 enum class CameraDirection {
@@ -30,6 +31,8 @@ class Camera {
         glm::vec3 getRight();
         float getPitch();
         float getYaw();
+
+        static void standardWalkProcessing(Camera* camera, GLFWwindow* window, float deltaTime);
 
     private:
         float _pitch;
