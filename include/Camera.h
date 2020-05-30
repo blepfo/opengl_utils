@@ -25,6 +25,9 @@ class Camera {
         void updateRotation(float deltaPitch, float deltaYaw);
         glm::mat4 getView();
         glm::vec3 getOrigin();
+        glm::vec3 getForward();
+        glm::vec3 getUp();
+        glm::vec3 getRight();
         float getPitch();
         float getYaw();
 
