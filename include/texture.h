@@ -7,7 +7,6 @@ namespace TextureUtils {
 
 unsigned int textureLoad(
     const char* imagePath,
-    GLenum format,
     GLenum wrap_s = GL_REPEAT,
     GLenum wrap_t = GL_REPEAT,
     GLenum min_filter = GL_NEAREST,

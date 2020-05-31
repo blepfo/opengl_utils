@@ -13,7 +13,6 @@ namespace TextureUtils {
 
 unsigned int textureLoad(
     const char* imagePath,
-    GLenum format,
     GLenum wrap_s,
     GLenum wrap_t,
     GLenum min_filter,
@@ -37,6 +36,10 @@ unsigned int textureLoad(
     if (!textureData) {
         throw std::runtime_error("Unable to load texture data");
     }
+    GLenum format;  
+    if (nChannels == 1) format = GL_RED;
+    else if (nChannels == 3) format = GL_RGB;
+    else if (nChannels == 4) format = GL_RGBA;
     glTexImage2D(
         GL_TEXTURE_2D,
         0,
