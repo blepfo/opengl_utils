@@ -4,3 +4,6 @@ build/*
 bin/*
 lib/*
 stb_image.h
+
+imgui.ini
+.DS_STORE

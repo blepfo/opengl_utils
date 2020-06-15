@@ -1,0 +1,3 @@
+[submodule "TwoParadigm/cpp_image_playground"]
+	path = TwoParadigm/cpp_image_playground
+	url = https://github.com/blepfo/cpp_image_playground.git
