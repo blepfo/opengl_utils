@@ -30,7 +30,7 @@ class SimpleRenderer {
 
         int run();
 
-        int deltaTime;
+        float deltaTime;
 
     protected:
         int screenWidth;

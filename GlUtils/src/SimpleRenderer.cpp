@@ -109,12 +109,15 @@ int SimpleRenderer::run() {
         std::cout << "SimpleRenderer::run() begin render loop" << std::endl;
         float lastFrameTime = 0.0f;
         while (!glfwWindowShouldClose(window)) {
+            // deltatime update
             float currentTime = glfwGetTime();
             this->deltaTime = currentTime - lastFrameTime;
             lastFrameTime = currentTime;
 
-            this->onRenderLoopBegin();
 
+            this->onRenderLoopBegin();
+            
+            // Update in case render uses these
             this->screenWidth = SCREEN_WIDTH;
             this->screenHeight = SCREEN_HEIGHT;
 
