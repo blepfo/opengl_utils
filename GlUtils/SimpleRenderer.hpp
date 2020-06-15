@@ -16,12 +16,12 @@ class SimpleRenderer {
         );
         // Initialize objects in the scene
         virtual void initScene() = 0;
-        // Handle user input and update instance variables
-        virtual void processInputs() = 0;
-        // Create ImGui, updating instance variables 
-        virtual void createGui() = 0;
         // For each object, bind its VAO, activate shaders, assign uniforms
         virtual void renderObjects() = 0;
+        // Handle user input and update instance variables
+        virtual void processInputs() {};
+        // Create ImGui, updating instance variables 
+        virtual void createGui() {};
 
         virtual void onRenderLoopBegin();
         virtual void onRenderLoopLoopback();
