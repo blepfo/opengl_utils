@@ -1,13 +1,13 @@
-#ifndef _TWO_TRIANGLES_RENDERER_H
-#define _TWO_TRIANGLES_RENDERER_H
-
+#pragma once
 
 #include<GL/glew.h>
 #include<GLFW/glfw3.h>
 
-#include "./SimpleRenderer.h"
+#include "GlUtils/SimpleRenderer.hpp"
 
-class TwoTrianglesRenderer : public SimpleRenderer {
+namespace GlUtils {
+
+class TwoTrianglesRenderer : public ::GlUtils::SimpleRenderer {
     public: 
         // Set uniforms for each frame
         virtual void setUniforms() = 0;
@@ -17,10 +17,10 @@ class TwoTrianglesRenderer : public SimpleRenderer {
 
         TwoTrianglesRenderer(
 			const char* fragmentShaderPath,
-            int screenWidth,
-            int screenHeight,
+            const int screenWidth,
+            const int screenHeight,
             const char* windowName,
-            bool useImgui=true
+            const bool useImgui=true
         ) : fragmentShaderPath(fragmentShaderPath),
             SimpleRenderer(screenWidth, screenHeight, windowName, useImgui) {}
 
@@ -32,7 +32,6 @@ class TwoTrianglesRenderer : public SimpleRenderer {
         Shader* shader;
 
         const char* fragmentShaderPath;
-
 };
 
-#endif
+} // namespace GlUtils

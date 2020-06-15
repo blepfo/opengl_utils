@@ -6,17 +6,17 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
-#include "../include/texture.h"
+#include "GlUtils/TextureUtils.hpp"
 
 
-namespace TextureUtils {
+namespace GlUtils::TextureUtils {
 
 unsigned int textureLoad(
     const char* imagePath,
-    GLenum wrap_s,
-    GLenum wrap_t,
-    GLenum min_filter,
-    GLenum mag_filter
+    const GLenum wrap_s,
+    const GLenum wrap_t,
+    const GLenum min_filter,
+    const GLenum mag_filter
 ) {
     unsigned int textureId;
     glGenTextures(1, &textureId);
@@ -57,4 +57,4 @@ unsigned int textureLoad(
 }
 
 
-} // namespace TextureUtils
+} // namespace GlUtils::TextureUtils

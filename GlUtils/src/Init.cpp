@@ -1,21 +1,24 @@
-#include<sstream>
+#include <sstream>
 
-#include<GL/glew.h>
-#include<GLFW/glfw3.h>
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
 
-namespace Init {
+#include "GlUtils/Init.hpp"
+
+
+namespace GlUtils::Init {
 
 GLFWwindow* basicWindow(
-    int major, 
-    int minor, 
-    int width,
-    int height,
+    const int major, 
+    const int minor, 
+    const int width,
+    const int height,
     const char* name,
-    bool mac = true
+    const bool mac
 ) {
-    bool initialized = glfwInit();
+    const bool initialized = glfwInit();
     if (initialized != GL_TRUE) {
-        throw std::runtime_error("Failed to initialize GLFW");
+        throw std::runtime_error("ERROR - GLUtils::Init::basicWindow() - Failed to initialize GLFW");
     }
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, major);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, minor);
@@ -27,20 +30,23 @@ GLFWwindow* basicWindow(
     GLFWwindow* window = glfwCreateWindow(width, height, name, NULL, NULL);
     if (window == NULL) {
         glfwTerminate();
-        throw std::runtime_error("Failed to create GLFW window");
+        throw std::runtime_error("ERROR - GlUtils::Init::basicWindow() - Failed to create GLFW window");
     }
     return window;
 }
 
 void glew() {
     glewExperimental = GL_TRUE;
-    GLenum initialized = glewInit();
+    const GLenum initialized = glewInit();
     if (initialized != GLEW_OK) {
         glfwTerminate();
         std::stringstream errorStream;
-        errorStream << "Failed to initialize GLEW: " << glewGetErrorString(initialized) << std::endl;
+        errorStream 
+            << "ERROR - GlUtils::Init::glew() - Failed to initialize GLEW: " 
+            << glewGetErrorString(initialized) 
+            << std::endl;
         throw std::runtime_error(errorStream.str());
     }
 }
 
-} // namespace Init
+} // namespace GlUtils::Init

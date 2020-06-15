@@ -1,8 +1,10 @@
-#ifndef _CAMERA_H
-#define _CAMERA_H
+#pragma once
 
 #include<GLFW/glfw3.h>
 #include<glm/glm.hpp>
+
+
+namespace GlUtils {
 
 enum class CameraDirection {
     FORWARD, 
@@ -20,17 +22,17 @@ class Camera {
             float rotateSpeed
         );
 
-        void translate(CameraDirection d, bool positive, float deltaTime);
+        void translate(const CameraDirection d, const bool positive, const float deltaTime);
         void setSpeed(float speed);
         void setRotateSpeed(float rotateSpeed);
-        void updateRotation(float deltaPitch, float deltaYaw);
-        glm::mat4 getView();
-        glm::vec3 getOrigin();
-        glm::vec3 getForward();
-        glm::vec3 getUp();
-        glm::vec3 getRight();
-        float getPitch();
-        float getYaw();
+        void updateRotation(const float deltaPitch, const float deltaYaw);
+        glm::mat4 getView() const;
+        glm::vec3 getOrigin() const;
+        glm::vec3 getForward() const;
+        glm::vec3 getUp() const;
+        glm::vec3 getRight() const;
+        float getPitch() const;
+        float getYaw() const;
 
         static void standardWalkProcessing(Camera* camera, GLFWwindow* window, float deltaTime);
 
@@ -45,4 +47,4 @@ class Camera {
         glm::vec3 _right;
 };
 
-#endif
+} // namespace GlUtils

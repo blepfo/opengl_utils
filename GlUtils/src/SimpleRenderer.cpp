@@ -6,8 +6,10 @@
 #include<imgui/examples/imgui_impl_opengl3.h>
 #include<imgui/examples/imgui_impl_glfw.h>
 
-#include "../include/SimpleRenderer.h"
-#include "../include/Init.h"
+#include "GlUtils/SimpleRenderer.hpp"
+#include "GlUtils/Init.hpp"
+
+namespace GlUtils {
 
 
 /** 
@@ -16,7 +18,7 @@
  */
 int SCREEN_WIDTH;
 int SCREEN_HEIGHT;
-void resizeCallback(GLFWwindow* window, int width, int height) {
+void resizeCallback(GLFWwindow* window, const int width, const int height) {
     glViewport(0, 0, width, height);
     SCREEN_WIDTH = width;
     SCREEN_HEIGHT = height;
@@ -25,11 +27,11 @@ void resizeCallback(GLFWwindow* window, int width, int height) {
 /**
  *
  */
-SimpleRenderer::SimpleRenderer(
-    int screenWidth, 
-    int screenHeight, 
+GlUtils::SimpleRenderer::SimpleRenderer(
+    const int screenWidth, 
+    const int screenHeight, 
     const char* windowName,
-    bool useImgui
+    const bool useImgui
 ): screenWidth(screenWidth), 
     screenHeight(screenHeight), 
     windowName(windowName),
@@ -38,7 +40,7 @@ SimpleRenderer::SimpleRenderer(
     SCREEN_WIDTH = screenWidth;
     SCREEN_HEIGHT = screenHeight;
     std::cout 
-        << "SimpleRenderer::Init with size (" 
+        << "GlUtils::SimpleRenderer::Init with size (" 
         << this->screenWidth 
         << ", " 
         << this->screenHeight
@@ -86,7 +88,7 @@ int SimpleRenderer::run() {
     try {
         GLFWwindow* window = Init::basicWindow(3, 3, this->screenWidth, this->screenHeight, this->windowName);
         glfwMakeContextCurrent(window);
-        Init::glew();
+        ::GlUtils::Init::glew();
         // Framebuffer size callback
         glfwSetFramebufferSizeCallback(window, resizeCallback);
         glEnable(GL_DEPTH_TEST);
@@ -139,3 +141,4 @@ int SimpleRenderer::run() {
     return 0;
 }
 
+} // namespace GlUtils

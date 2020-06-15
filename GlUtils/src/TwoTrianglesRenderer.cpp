@@ -3,22 +3,25 @@
 #include<GL/glew.h>
 #include<GLFW/glfw3.h>
 
-#include "../include/Shader.h"
-#include "../include/SimpleRenderer.h"
-#include "../include/TwoTrianglesRenderer.h"
+#include "GlUtils/Shader.hpp"
+#include "GlUtils/SimpleRenderer.hpp"
+#include "GlUtils/TwoTrianglesRenderer.hpp"
+
+
+namespace GlUtils {
 
 /** 
  * Init VAO+VBO+EBO for two triangles
  */
 void TwoTrianglesRenderer::initScene() {
 	// Vertex data
-	float vertices[] = {
+	const float vertices[] = {
 		-1.0, -1.0, 0.0,
 		-1.0, 1.0, 0.0,
 		1.0, -1.0, 0.0,
 		1.0, 1.0, 0.0,
 	};
-	unsigned int indices[] = {
+	const unsigned int indices[] = {
 		0, 1, 2,
 		1, 3, 2
 	};
@@ -41,9 +44,9 @@ void TwoTrianglesRenderer::initScene() {
 	this->ebo = ebo;
 
     // NOTE - This won't work with windows
-    std::string filePath = __FILE__;
-    std::string dirPath = filePath.substr(0, filePath.rfind("/"));
-    std::string vertexShaderPath = dirPath + "/" + "twotriangles.vs";
+    const std::string filePath = __FILE__;
+    const std::string dirPath = filePath.substr(0, filePath.rfind("/"));
+    const std::string vertexShaderPath = dirPath + "/" + "twotriangles.vs";
     this->shader = new Shader(
         vertexShaderPath.c_str(),
         this->fragmentShaderPath
@@ -59,3 +62,5 @@ void TwoTrianglesRenderer::renderObjects() {
     this->setUniforms(); 
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
+
+} // namespace GlUtils

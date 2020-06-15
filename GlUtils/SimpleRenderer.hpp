@@ -1,17 +1,18 @@
-#ifndef _SIMPLE_RENDERER_H
-#define _SIMPLE_RENDERER_H
+#pragma once
 
 #include<unordered_map>
 #include<string>
 #include<iostream>
 
+namespace GlUtils {
+
 class SimpleRenderer {
     public:
         SimpleRenderer(
-            int screenWidth, 
-            int screenHeight, 
+            const int screenWidth, 
+            const int screenHeight, 
             const char* windowName,
-            bool useImgui = true
+            const bool useImgui = true
         );
         // Initialize objects in the scene
         virtual void initScene() = 0;
@@ -40,4 +41,4 @@ class SimpleRenderer {
         GLFWwindow* _window;
 };
 
-#endif
+} // namespace GlUtils

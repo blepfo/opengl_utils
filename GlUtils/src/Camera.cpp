@@ -4,10 +4,18 @@
 #include<glm/glm.hpp>
 #include<glm/gtc/matrix_transform.hpp>
 
-#include "../include/Camera.h"
+#include "GlUtils/Camera.hpp"
 
 
-Camera::Camera(glm::vec3 origin, float pitchDegrees, float yawDegrees, float speed, float rotateSpeed) {
+namespace GlUtils {
+
+Camera::Camera(
+    const glm::vec3 origin, 
+    const float pitchDegrees, 
+    const float yawDegrees, 
+    const float speed, 
+    const float rotateSpeed
+) {
     this->_origin = origin;
     // Rotation
     this->_pitch = glm::radians(pitchDegrees);
@@ -22,7 +30,7 @@ Camera::Camera(glm::vec3 origin, float pitchDegrees, float yawDegrees, float spe
 void Camera::setSpeed(float speed) {
     if (speed < 0.0f) {
         std::cout 
-            << "Camera::setSpeed - Invalid negative speed value. Setting to 0.0. Value was " 
+            << "GlUtils::Camera::setSpeed() - Invalid negative speed value. Setting to 0.0. Value was " 
             << speed 
             << std::endl;
         speed = 0.0f;
@@ -33,7 +41,7 @@ void Camera::setSpeed(float speed) {
 void Camera::setRotateSpeed(float rotateSpeed) {
     if (rotateSpeed < 0.0f) {
         std::cout 
-            << "Camera::setRotateSpeed - Invalid negative rotateSpeed value. Setting to 0.0. Value was " 
+            << "GlUtils::Camera::setRotateSpeed() - Invalid negative rotateSpeed value. Setting to 0.0. Value was " 
             << rotateSpeed 
             << std::endl;
         rotateSpeed = 0.0f;
@@ -41,13 +49,13 @@ void Camera::setRotateSpeed(float rotateSpeed) {
     this->_rotateSpeed = rotateSpeed;
 }
 
-void Camera::updateRotation(float deltaPitch, float deltaYaw) {
+void Camera::updateRotation(const float deltaPitch, const float deltaYaw) {
     bool rotationChanged = false;
-    float pitchUpdate = deltaPitch * this->_rotateSpeed;
+    const float pitchUpdate = deltaPitch * this->_rotateSpeed;
     if (abs(pitchUpdate) > 0.0001)
         this->_pitch += pitchUpdate;
         rotationChanged = true;
-    float yawUpdate = deltaYaw * this->_rotateSpeed;
+    const float yawUpdate = deltaYaw * this->_rotateSpeed;
     if (abs(yawUpdate) > 0.0001) {
         this->_yaw += yawUpdate;    
         rotationChanged = true;
@@ -65,8 +73,8 @@ void Camera::updateRotation(float deltaPitch, float deltaYaw) {
     }
 }
 
-void Camera::translate(CameraDirection d, bool positive, float deltaTime) {
-    float speedSign = (positive) ? 1.0f : -1.0f;
+void Camera::translate(const CameraDirection d, const bool positive, const float deltaTime) {
+    const float speedSign = (positive) ? 1.0f : -1.0f;
     if (d == CameraDirection::FORWARD) {
         this->_origin += speedSign * this->_speed * this->_forward;
     } else if (d == CameraDirection::RIGHT) {
@@ -76,35 +84,35 @@ void Camera::translate(CameraDirection d, bool positive, float deltaTime) {
     }
 }
 
-glm::vec3 Camera::getOrigin() {
+glm::vec3 Camera::getOrigin() const {
     return this->_origin;
 }
 
-float Camera::getPitch() {
+float Camera::getPitch() const {
     return this->_pitch;
 }
 
-float Camera::getYaw() {
+float Camera::getYaw() const {
     return this->_yaw;
 }
 
-glm::mat4 Camera::getView() {
+glm::mat4 Camera::getView() const {
     return glm::lookAt(this->_origin, this->_origin + this->_forward, this->_up);
 }
 
-glm::vec3 Camera::getForward() {
+glm::vec3 Camera::getForward() const {
     return this->_forward;
 }
 
-glm::vec3 Camera::getUp() {
+glm::vec3 Camera::getUp() const {
     return this->_up;
 }
 
-glm::vec3 Camera::getRight() {
+glm::vec3 Camera::getRight() const {
     return this->_right;
 }
 
-void Camera::standardWalkProcessing(Camera* camera, GLFWwindow* window, float deltaTime) {
+void Camera::standardWalkProcessing(Camera* camera, GLFWwindow* window, const float deltaTime) {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, true);
         std::cout << "ESC KEY -> CLOSE WINDOW" << std::endl;
@@ -143,3 +151,5 @@ void Camera::standardWalkProcessing(Camera* camera, GLFWwindow* window, float de
         camera->updateRotation(0.0f, 1.0f);
     }
 }
+
+} // namespace GlUtils
