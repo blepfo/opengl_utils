@@ -16,22 +16,31 @@ GL_UTILS=$(MAKEFILE_DIR)GlUtils
 # Used for texture loading
 STB_IMAGE_DIR=$(MAKEFILE_DIR)
 
+# Location of FreeImage install
+FREEIMAGE_DIST=/usr/local/include/FreeImage/Dist
+
 CC=g++ --std=c++17
 CPP_ARGS=-Wall
 
 all: directories $(LIB)/GlUtils.a $(LIB)/imgui.a
 
 
-# Vicsek TwoTrianglesRenderer demo
-demo_vicsek: $(BIN)/demo_vicsek.o
+demo: directories demo_vicsek
 
-$(BIN)/demo_vicsek.o: demo_vicsek/main.cpp demo_vicsek/vicsek.fs $(LIB)/imgui.a $(LIB)/GlUtils.a
+# Vicsek TwoTrianglesRenderer demo
+demo_vicsek: directories $(BIN)/demo_vicsek.o
+
+$(BIN)/demo_vicsek.o: demo_vicsek/main.cpp demo_vicsek/vicsek.fs $(LIB)/GlUtils.a $(LIB)/imgui.a $(FREEIMAGE_DIST)
 	$(info $@)
 	$(CC) $(CPP_ARGS) \
 		-I$(IMGUI) \
 		-I$(GL_UTILS) \
 		-I$(STB_IMAGE_DIR) \
+		-I$(FREEIMAGE_DIST) \
+		$(LIB)/GlUtils.a \
+		$(LIB)/imgui.a \
 		$(OPENGL_ARGS) \
+		$(FREEIMAGE_DIST)/libfreeimage.a \
 		-o $@ \
 		$(filter %.cpp %.a, $^)
 
@@ -43,6 +52,7 @@ $(LIB)/GlUtils.a: $(wildcard $(GL_UTILS)/src/*.cpp) $(wildcard $(GL_UTILS)/*.hpp
 		-I$(IMGUI) \
 		-I$(MAKEFILE_DIR) \
 		-I$(STB_IMAGE_DIR) \
+		-I$(FREEIMAGE_DIST) \
 		$(filter %.cpp, $^)
 	ar rvs $@ $(BUILD)/GlUtils/*.o
 

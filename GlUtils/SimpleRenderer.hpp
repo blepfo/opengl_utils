@@ -19,13 +19,13 @@ class SimpleRenderer {
         // For each object, bind its VAO, activate shaders, assign uniforms
         virtual void renderObjects() = 0;
         // Handle user input and update instance variables
-        virtual void processInputs() {};
+        virtual void processInputs() {}
         // Create ImGui, updating instance variables 
-        virtual void createGui() {};
+        virtual void createGui() {}
+        virtual void onRenderLoopLoopback() {}
 
-        virtual void onRenderLoopBegin();
-        virtual void onRenderLoopLoopback();
-        virtual void renderGui();
+        virtual void onRenderLoopBegin(); 
+        virtual void renderGui(); 
         void shutdown();
 
         int run();

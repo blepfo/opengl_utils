@@ -56,14 +56,6 @@ void SimpleRenderer::onRenderLoopBegin() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-/**
- * Default loopback - swap buffers and poll events
- */
-void SimpleRenderer::onRenderLoopLoopback() {
-    glfwSwapBuffers(this->_window);
-    glfwPollEvents();
-}
-
 /** 
  * Default render gui
  */
@@ -114,7 +106,6 @@ int SimpleRenderer::run() {
             this->deltaTime = currentTime - lastFrameTime;
             lastFrameTime = currentTime;
 
-
             this->onRenderLoopBegin();
             
             // Update in case render uses these
@@ -132,8 +123,12 @@ int SimpleRenderer::run() {
             if (this->useImgui) {
                 this->renderGui();
             };
+
             this->onRenderLoopLoopback();
 
+            // SimpleRenderer loop always swaps buffers
+            glfwSwapBuffers(this->_window);
+            glfwPollEvents();
         }
     } catch(const std::exception &e) {
         std::cerr << e.what() << std::endl;
