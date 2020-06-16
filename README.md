@@ -11,5 +11,9 @@
 
 
 ## Requirements
-* [`stb_image.h`](https://github.com/nothings/stb/blob/master/stb_image.h)
-* [glm](https://github.com/g-truc/glm)
+* [FreeImage](https://freeimage.sourceforge.io/) - Used for PNG saving. 
+Usage reference: [UsingFreeImage3.11 for ImageOutput](http://graphics.stanford.edu/courses/cs148-10-summer/docs/UsingFreeImage.pdf)
+
+* [glm](https://github.com/g-truc/glm) - Used for linear algebra
+
+* [`stb_image.h`](https://github.com/nothings/stb/blob/master/stb_image.h) - Used for texture loading
