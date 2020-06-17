@@ -3,6 +3,9 @@ BUILD=./build
 SRC=./src
 LIB=./lib
 
+GL_UTILS_BUILD=$(BUILD)/GlUtils
+
+SYS_INCLUDE=/usr/local/include
 OPENGL_ARGS=-framework Opengl -I/usr/local/include -lGLFW -lglew
 
 # Dear ImGui assumed to be in IMGUI
@@ -11,6 +14,7 @@ IMGUI_EXAMPLES=$(IMGUI)/examples
 
 MAKEFILE_DIR=$(dir $(abspath $(firstword $(MAKEFILE_LIST))))
 GL_UTILS=$(MAKEFILE_DIR)GlUtils
+GL_UTILS_SRC=$(GL_UTILS)/src
 
 # Assumes that stb_image.h is located in this directory
 # Used for texture loading
@@ -27,13 +31,22 @@ all: directories $(LIB)/GlUtils.a $(LIB)/imgui.a
 
 demo: directories demo_vicsek
 
-# Vicsek TwoTrianglesRenderer demo
+
+# VICSEK TWOTRIANGLES DEMO
 demo_vicsek: directories $(BIN)/demo_vicsek.o
 
-$(BIN)/demo_vicsek.o: demo_vicsek/main.cpp demo_vicsek/vicsek.fs $(LIB)/GlUtils.a $(LIB)/imgui.a $(FREEIMAGE_DIST)
+VICSEK_DEPS = demo_vicsek/main.cpp demo_vicsek/vicsek.fs
+# Libs
+VICSEK_DEPS += $(addprefix $(LIB)/, GlUtils.a imgui.a)
+# GlUtil headers
+VICSEK_DEPS += $(addprefix $(GL_UTILS)/, SaveUtils.hpp Shader.hpp TwoTrianglesRenderer.hpp) 
+# FreeImage for Png saving
+VICSEK_DEPS += $(FREEIMAGE_DIST)
+
+$(BIN)/demo_vicsek.o: $(VICSEK_DEPS)
 	$(info $@)
+	$(info $^)
 	$(CC) $(CPP_ARGS) \
-		-I$(IMGUI) \
 		-I$(GL_UTILS) \
 		-I$(STB_IMAGE_DIR) \
 		-I$(FREEIMAGE_DIST) \
@@ -44,19 +57,38 @@ $(BIN)/demo_vicsek.o: demo_vicsek/main.cpp demo_vicsek/vicsek.fs $(LIB)/GlUtils.
 		-o $@ \
 		$(filter %.cpp %.a, $^)
 
-# GlUtils - Uses 
-$(LIB)/GlUtils.a: $(wildcard $(GL_UTILS)/src/*.cpp) $(wildcard $(GL_UTILS)/*.hpp)
+
+# GL UTILS
+
+# GlUtils object archive - Includes GlUtils 
+$(LIB)/GlUtils.a: $(addprefix $(GL_UTILS_BUILD)/, Camera.o Init.o SaveUtils.o Shader.o SimpleRenderer.o TextureUtils.o TwoTrianglesRenderer.o)
 	$(info $@)
-	cd $(BUILD)/GlUtils \
-	&& $(CC) -c \
-		-I$(IMGUI) \
+	ar rvs $@ $(filter %.o, $^)
+
+
+$(GL_UTILS_BUILD)/TwoTrianglesRenderer.o: $(GL_UTILS_SRC)/TwoTrianglesRenderer.cpp $(GL_UTILS)/TwoTrianglesRenderer.hpp $(GL_UTILS)/SimpleRenderer.hpp
+	$(info $@)
+	$(CC) -c \
+		-I$(SYS_INCLUDE) \
 		-I$(MAKEFILE_DIR) \
+		-o $@ \
+		$<
+
+# GlUtils default - single cpp file with single hpp
+$(GL_UTILS_BUILD)/%.o: $(GL_UTILS_SRC)/%.cpp $(GL_UTILS)/%.hpp
+	$(info $@)
+	$(CC) -c \
+		-I$(SYS_INCLUDE) \
+		-I$(MAKEFILE_DIR) \
+		-I$(IMGUI) \
 		-I$(STB_IMAGE_DIR) \
 		-I$(FREEIMAGE_DIST) \
-		$(filter %.cpp, $^)
-	ar rvs $@ $(BUILD)/GlUtils/*.o
+		-o $@ \
+		$<
 
-$(LIB)/imgui.a: $(wildcard $(IMGUI)/*.cpp) $(wildcard $(IMGUI)/*.h) $(IMGUI_EXAMPLES)/imgui_impl_opengl3.cpp $(IMGUI_EXAMPLES)/imgui_impl_glfw.cpp
+
+# Imgui object archive for OpenGL3 + GLFW 
+$(LIB)/imgui.a: $(wildcard $(IMGUI)/*.cpp) $(addprefix $(IMGUI_EXAMPLES)/, imgui_impl_opengl3.cpp imgui_impl_glfw.cpp)
 	$(info $@)
 	cd $(BUILD)/imgui \
 	&& $(CC) -c \
@@ -64,6 +96,9 @@ $(LIB)/imgui.a: $(wildcard $(IMGUI)/*.cpp) $(wildcard $(IMGUI)/*.h) $(IMGUI_EXAM
 		-I$(IMGUI_EXAMPLES) \
 		$(filter %.cpp, $^) 
 	ar rvs $@ $(BUILD)/imgui/*.o
+
+
+# DIRECTORIES
 
 directories: $(BIN) $(LIB) $(BUILD)/imgui/ $(BUILD)/GlUtils/
 
