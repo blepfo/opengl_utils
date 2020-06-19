@@ -15,16 +15,43 @@ Camera::Camera(
     const float yawDegrees, 
     const float speed, 
     const float rotateSpeed
-) {
-    this->_origin = origin;
-    // Rotation
-    this->_pitch = glm::radians(pitchDegrees);
-    this->_yaw = glm::radians(yawDegrees);
+) : origin(origin),
+    pitch(glm::radians(pitchDegrees)),
+    yaw(glm::radians(yawDegrees)),
+    projection(glm::mat4(1.0f));
+{
     updateRotation(0.0f, 0.0f);
     // Speed
     setSpeed(speed);
     setRotateSpeed(rotateSpeed);
 }
+
+
+Camera::Camera(
+    // View + movement params
+    const glm::vec3 origin, 
+    const float pitchDegrees, 
+    const float yawDegrees, 
+    const float speed, 
+    const float rotateSpeed
+    // Projection params
+    float fovY,
+    float aspect,
+    float zNear,
+    float zFar
+) : origin(origin),
+    pitch(glm::radians(pitchDegrees)),
+    yaw(glm::radians(yawDegrees)),
+    projection(glm::perspective(glm::radians(fovY, aspect, zNear, zFar)));
+{
+    // Rotation
+    updateRotation(0.0f, 0.0f);
+    // Speed
+    setSpeed(speed);
+    setRotateSpeed(rotateSpeed);
+}
+
+
 
 
 void Camera::setSpeed(float speed) {
@@ -76,16 +103,16 @@ void Camera::updateRotation(const float deltaPitch, const float deltaYaw) {
 void Camera::translate(const CameraDirection d, const bool positive, const float deltaTime) {
     const float speedSign = (positive) ? 1.0f : -1.0f;
     if (d == CameraDirection::FORWARD) {
-        this->_origin += speedSign * this->_speed * this->_forward;
+        this->origin += speedSign * this->_speed * this->_forward;
     } else if (d == CameraDirection::RIGHT) {
-        this->_origin += speedSign * this->_speed * this->_right;
+        this->origin += speedSign * this->_speed * this->_right;
     } else if (d == CameraDirection::UP) {
-        this->_origin += speedSign * this->_speed * this->_up;
+        this->origin += speedSign * this->_speed * this->_up;
     }
 }
 
 glm::vec3 Camera::getOrigin() const {
-    return this->_origin;
+    return this->origin;
 }
 
 float Camera::getPitch() const {
@@ -97,8 +124,14 @@ float Camera::getYaw() const {
 }
 
 glm::mat4 Camera::getView() const {
-    return glm::lookAt(this->_origin, this->_origin + this->_forward, this->_up);
+    return glm::lookAt(this->origin, this->origin + this->_forward, this->_up);
 }
+
+glm::mat4 Camera::getProjection() const {
+    return this->projection;
+}
+
+
 
 glm::vec3 Camera::getForward() const {
     return this->_forward;

@@ -14,19 +14,35 @@ enum class CameraDirection {
 
 class Camera {
     public:
+        // Constructor for no  
         Camera(
             glm::vec3 origin, 
             float pitchDegrees, 
             float yawDegrees, 
             float speed, 
             float rotateSpeed
-        );
+        ); 
+
+        Camera(
+            // View + movement params
+            glm::vec3 origin, 
+            float pitchDegrees, 
+            float yawDegrees, 
+            float speed, 
+            float rotateSpeed,
+            // Perspective Params
+            float fovY,
+            float aspect, 
+            float zNear,
+            float zFar
+        ); 
 
         void translate(const CameraDirection d, const bool positive, const float deltaTime);
         void setSpeed(float speed);
         void setRotateSpeed(float rotateSpeed);
         void updateRotation(const float deltaPitch, const float deltaYaw);
         glm::mat4 getView() const;
+        glm::mat4 getProjection() const;
         glm::vec3 getOrigin() const;
         glm::vec3 getForward() const;
         glm::vec3 getUp() const;
@@ -45,6 +61,7 @@ class Camera {
         glm::vec3 _forward;
         glm::vec3 _up;
         glm::vec3 _right;
+        glm::mat4 projection;
 };
 
 } // namespace GlUtils
