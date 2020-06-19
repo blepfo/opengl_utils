@@ -4,6 +4,7 @@ SRC=./src
 LIB=./lib
 
 GL_UTILS_BUILD=$(BUILD)/GlUtils
+SCENE_RENDERER_BUILD=$(BUILD)/SceneRenderer
 
 SYS_INCLUDE=/usr/local/include
 OPENGL_ARGS=-framework Opengl -I/usr/local/include -lGLFW -lglew
@@ -15,6 +16,8 @@ IMGUI_EXAMPLES=$(IMGUI)/examples
 MAKEFILE_DIR=$(dir $(abspath $(firstword $(MAKEFILE_LIST))))
 GL_UTILS=$(MAKEFILE_DIR)GlUtils
 GL_UTILS_SRC=$(GL_UTILS)/src
+SCENE_RENDERER=$(MAKEFILE_DIR)/SceneRenderer
+SCENE_RENDERER_SRC=$(SCENE_RENDERER)/src
 
 # Assumes that stb_image.h is located in this directory
 # Used for texture loading
@@ -58,9 +61,32 @@ $(BIN)/demo_vicsek.o: $(VICSEK_DEPS)
 		$(filter %.cpp %.a, $^)
 
 
+# SCENE RENDERER
+
+$(LIB)/SceneRenderer.a: $(addprefix $(SCENE_RENDERER_BUILD)/, Objects.o Scene.o)
+	$(info $@)
+	ar rvs $@ $(filter %.o, $^)
+
+$(SCENE_RENDERER_BUILD)/Objects.o: $(SCENE_RENDERER_SRC)/Objects.cpp $(SCENE_RENDERER)/Objects.hpp $(GL_UTILS)/Camera.hpp
+	$(info $@)
+	$(CC) -c \
+		-I$(SYS_INCLUDE) \
+		-I$(MAKEFILE_DIR) \
+		-o $@ \
+		$<
+
+$(SCENE_RENDERER_BUILD)/Scene.o: $(SCENE_RENDERER_SRC)/Scene.cpp $(addprefix $(SCENE_RENDERER)/, Scene.hpp Objects.hpp Lights.hpp)
+	$(info $@)
+	$(CC) -c \
+		-I$(SYS_INCLUDE) \
+		-I$(MAKEFILE_DIR) \
+		-o $@ \
+		$<
+
+
 # GL UTILS
 
-# GlUtils object archive - Includes GlUtils 
+# Object archive
 $(LIB)/GlUtils.a: $(addprefix $(GL_UTILS_BUILD)/, Camera.o Init.o SaveUtils.o Shader.o SimpleRenderer.o TextureUtils.o TwoTrianglesRenderer.o)
 	$(info $@)
 	ar rvs $@ $(filter %.o, $^)
