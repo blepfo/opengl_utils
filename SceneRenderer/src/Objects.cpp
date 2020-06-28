@@ -26,13 +26,13 @@ GlUtils::Shader SceneRenderer::StaticMaterialObject::staticShader = GlUtils::Sha
     true
 );
 
-bool SceneRenderer::StaticMaterialObject::shaderInit = false;
+bool SceneRenderer::StaticMaterialObject::initialized = false;
 
 void StaticMaterialObject::initShader() {
-    if (!::SceneRenderer::StaticMaterialObject::shaderInit) {
+    if (!::SceneRenderer::StaticMaterialObject::initialized) {
         std::cout << "StaticMaterialObject::initShader - Init static Shader" << std::endl;
         ::SceneRenderer::StaticMaterialObject::staticShader.initialize();
-        ::SceneRenderer::StaticMaterialObject::shaderInit = true;
+        ::SceneRenderer::StaticMaterialObject::initialized = true;
     }
 }
 
@@ -144,27 +144,36 @@ void StaticMaterialObject::activateShader(
 }
 
 
+// All static vars need out of line init else error
+bool SceneRenderer::SimpleCube::initialized = false;
+unsigned int SceneRenderer::SimpleCube::vao = 0;
+unsigned int SceneRenderer::SimpleCube::vbo = 0;
+unsigned int SceneRenderer::SimpleCube::ebo = 0;
+
 void SimpleCube::initialize() {
-    // Create OpenGL buffers
-    glGenVertexArrays(1, &this->vao);
-    glGenBuffers(1, &this->vbo);
-    // Bind buffers
-    glBindVertexArray(this->vao);
-    glBindBuffer(GL_ARRAY_BUFFER, this->vbo);
-    // Load vertices
-    constexpr int numVboElements = ::SceneRenderer::SimpleCube::cubeVboSize;
-    glBufferData(
-        GL_ARRAY_BUFFER,
-        numVboElements * 6 * sizeof(float),
-        ::SceneRenderer::SimpleCube::cubeVboContents,
-        GL_STATIC_DRAW
-    );
-    // Position attribute
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6*sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-    // Normals attribute
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6*sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
+    if (!SimpleCube::initialized) {
+        // Create OpenGL buffers
+        glGenVertexArrays(1, &::SceneRenderer::SimpleCube::vao);
+        glGenBuffers(1, &::SceneRenderer::SimpleCube::vbo);
+        // Bind buffers
+        glBindVertexArray(::SceneRenderer::SimpleCube::vao);
+        glBindBuffer(GL_ARRAY_BUFFER, ::SceneRenderer::SimpleCube::vbo);
+        // Load vertices
+        constexpr int numVboElements = ::SceneRenderer::SimpleCube::cubeVboSize;
+        glBufferData(
+            GL_ARRAY_BUFFER,
+            numVboElements * 6 * sizeof(float),
+            ::SceneRenderer::SimpleCube::cubeVboContents,
+            GL_STATIC_DRAW
+        );
+        // Position attribute
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6*sizeof(float), (void*)0);
+        glEnableVertexAttribArray(0);
+        // Normals attribute
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6*sizeof(float), (void*)(3 * sizeof(float)));
+        glEnableVertexAttribArray(1);
+        SimpleCube::initialized = true;
+    }
 }
 
 
@@ -174,7 +183,7 @@ void SimpleCube::render(
 ) const {
     // StaticMaterialObject activateShader binds material + light + model uniforms
     this->activateShader(lights, camera);
-    glBindVertexArray(this->vao);
+    glBindVertexArray(::SceneRenderer::SimpleCube::vao);
     glDrawArrays(GL_TRIANGLES, 0, ::SceneRenderer::SimpleCube::cubeVboSize);
     // Unbind vao to avoid errors
     glBindVertexArray(0);
