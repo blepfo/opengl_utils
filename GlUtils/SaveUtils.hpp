@@ -1,9 +1,5 @@
 #pragma once
 
-/** 
- * Save Png
- */
-
 namespace GlUtils::SaveUtils {
 
 /** 

@@ -48,6 +48,11 @@ GlUtils::SimpleRenderer::SimpleRenderer(
         << std::endl;
 }
 
+void GlUtils::SimpleRenderer::toggleImgui() {
+    this->useImgui = !this->useImgui;
+}
+
+
 /** 
  * Default loop begin - Clear color + depth buffer
  */
