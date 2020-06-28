@@ -27,6 +27,7 @@ class SimpleRenderer {
         virtual void onRenderLoopBegin(); 
         virtual void renderGui(); 
         void shutdown();
+        void toggleImgui();
 
         int run();
 

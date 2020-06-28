@@ -6,6 +6,7 @@ LIB=./lib
 GL_UTILS_BUILD=$(BUILD)/GlUtils
 SCENE_RENDERER_BUILD=$(BUILD)/SceneRenderer
 
+# Includes glew, glfw, imgui
 SYS_INCLUDE=/usr/local/include
 OPENGL_ARGS=-framework Opengl -I/usr/local/include -lGLFW -lglew
 
@@ -16,7 +17,7 @@ IMGUI_EXAMPLES=$(IMGUI)/examples
 MAKEFILE_DIR=$(dir $(abspath $(firstword $(MAKEFILE_LIST))))
 GL_UTILS=$(MAKEFILE_DIR)GlUtils
 GL_UTILS_SRC=$(GL_UTILS)/src
-SCENE_RENDERER=$(MAKEFILE_DIR)/SceneRenderer
+SCENE_RENDERER=$(MAKEFILE_DIR)SceneRenderer
 SCENE_RENDERER_SRC=$(SCENE_RENDERER)/src
 
 # Assumes that stb_image.h is located in this directory
@@ -32,7 +33,7 @@ CPP_ARGS=-Wall
 all: directories $(LIB)/GlUtils.a $(LIB)/imgui.a
 
 
-demo: directories demo_vicsek
+demo: directories demo_vicsek demo_simplecube
 
 
 # VICSEK TWOTRIANGLES DEMO
@@ -55,6 +56,38 @@ $(BIN)/demo_vicsek.o: $(VICSEK_DEPS)
 		-I$(FREEIMAGE_DIST) \
 		$(LIB)/GlUtils.a \
 		$(LIB)/imgui.a \
+		$(OPENGL_ARGS) \
+		$(FREEIMAGE_DIST)/libfreeimage.a \
+		-o $@ \
+		$(filter %.cpp %.a, $^)
+
+
+# SIMPLECUBE SCENERENDERER DEMO
+demo_simplecube: directories $(BIN)/demo_simplecube.o
+
+SIMPLECUBE_DEPS = demo_simplecube/main.cpp
+# Libs
+SIMPLECUBE_DEPS += $(addprefix $(LIB)/, GlUtils.a imgui.a SceneRenderer.a)
+# GlUtil headers
+SIMPLECUBE_DEPS += $(GL_UTILS)/SaveUtils.hpp
+# Scenerenderer headers
+SIMPLECUBE_DEPS += $(addprefix $(SCENE_RENDERER_BUILD)/, Lights.hpp Materials.hpp Objects.hpp Renderer.hpp Scene.hpp)
+# FreeImage for Png saving
+SIMPLECUBE_DEPS += $(FREEIMAGE_DIST)
+
+$(BIN)/demo_simplecube.o: $(SIMPLECUBE_DEPS)
+	$(info $@)
+	$(info $^)
+	$(CC) $(CPP_ARGS) \
+		-I$(GL_UTILS) \
+		-I$(IMGUI) \
+		-I$(SCENE_RENDERER) \
+		-I$(STB_IMAGE_DIR) \
+		-I$(SYS_INCLUDE) \
+		-I$(FREEIMAGE_DIST) \
+		$(LIB)/GlUtils.a \
+		$(LIB)/imgui.a \
+		$(LIB)/SceneRenderer.a \
 		$(OPENGL_ARGS) \
 		$(FREEIMAGE_DIST)/libfreeimage.a \
 		-o $@ \
@@ -87,7 +120,7 @@ $(SCENE_RENDERER_BUILD)/Scene.o: $(SCENE_RENDERER_SRC)/Scene.cpp $(addprefix $(S
 # GL UTILS
 
 # Object archive
-$(LIB)/GlUtils.a: $(addprefix $(GL_UTILS_BUILD)/, Camera.o Init.o SaveUtils.o Shader.o SimpleRenderer.o TextureUtils.o TwoTrianglesRenderer.o)
+$(LIB)/GlUtils.a: $(addprefix $(GL_UTILS_BUILD)/, Camera.o Init.o SaveUtils.o Shader.o SimpleRenderer.o TextureUtils.o Transform.o TwoTrianglesRenderer.o)
 	$(info $@)
 	ar rvs $@ $(filter %.o, $^)
 
@@ -126,7 +159,7 @@ $(LIB)/imgui.a: $(wildcard $(IMGUI)/*.cpp) $(addprefix $(IMGUI_EXAMPLES)/, imgui
 
 # DIRECTORIES
 
-directories: $(BIN) $(LIB) $(BUILD)/imgui/ $(BUILD)/GlUtils/
+directories: $(BIN) $(LIB) $(BUILD)/imgui/ $(GL_UTILS_BUILD) $(SCENE_RENDERER_BUILD)
 
 $(BUILD)/%/: 
 	mkdir -p $@

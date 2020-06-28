@@ -19,15 +19,18 @@ class Renderer : public ::GlUtils::SimpleRenderer {
         };
 
         void renderObjects() override {
-            this->scene->render()
+            this->scene->render();
         };
 
         Renderer(
+            ::SceneRenderer::Scene* scene,
             const int screenWidth,
             const int screenHeight,
             const char* windowName,
             const bool useImgui = true
-        ) : GlUtils::SimpleRenderer(screenWidth, screenHeight, windowName, useImgui) {}
-}
+        ) : GlUtils::SimpleRenderer(screenWidth, screenHeight, windowName, useImgui), 
+            scene(scene) {}
+
+};
 
 } // namespace SceneRenderer

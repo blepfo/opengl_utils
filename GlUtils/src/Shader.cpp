@@ -11,14 +11,28 @@
 
 namespace GlUtils {
 
-Shader::Shader(const char* vertexPath, const char* fragmentPath) :
-    _vertexPath(std::string(vertexPath)), _fragmentPath(std::string(fragmentPath))
+Shader::Shader(
+    const char* vertexPath, 
+    const char* fragmentPath, 
+    const bool manualInit
+) :
+    vertexPath(std::string(vertexPath)), fragmentPath(std::string(fragmentPath))
 {
+    // Optionally don't compile/link so that Shader object 
+    // can be initialized before OpenGL context is created, if necessary
+    if (!manualInit) this->initialize();
+}
+
+/**
+ * Compile shader sources and link
+ */
+void Shader::initialize() {
     // Vertex shader
-    const std::string vertexSource = this->readFile(vertexPath);
-    const unsigned int vertexId = this->compile(vertexSource.c_str(), GL_VERTEX_SHADER);
+    const std::string vertexSource = this->readFile(this->vertexPath.c_str());
     // Fragment shader
-    const std::string fragmentSource = this->readFile(fragmentPath);
+    const std::string fragmentSource = this->readFile(this->fragmentPath.c_str());
+
+    const unsigned int vertexId = this->compile(vertexSource.c_str(), GL_VERTEX_SHADER);
     const unsigned int fragmentId = this->compile(fragmentSource.c_str(), GL_FRAGMENT_SHADER);
     // Compile shaders
     this->programId = this->link(vertexId, fragmentId);
@@ -75,7 +89,7 @@ std::string Shader::readFile(const char* path) const {
     std::ifstream shaderFile;
     std::stringstream readStream;
     // Allow ifstream object to throw exceptions
-    std::cout << "Read shader from " << path << std::endl;
+    std::cout << "GlUtils::Shader - Read from " << path << std::endl;
     shaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
     shaderFile.open(path);
     // Read file buffer into string stream

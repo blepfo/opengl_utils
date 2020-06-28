@@ -5,7 +5,7 @@
 
 namespace SceneRenderer {
 
-void SimpleScene::render override() {
+void SimpleScene::render() const {
     for(::SceneRenderer::StaticMaterialObject* object : this->objects) {
         object->render(this->lights, this->camera);
     }

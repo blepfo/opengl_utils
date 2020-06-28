@@ -14,7 +14,14 @@ enum class CameraDirection {
 
 class Camera {
     public:
-        // Constructor for no  
+        // Constructors for no projection
+        // Useful for GLSL cameras that just need axes
+        Camera(
+            glm::vec3 origin, 
+            float speed, 
+            float rotateSpeed
+        ); 
+
         Camera(
             glm::vec3 origin, 
             float pitchDegrees, 
@@ -22,6 +29,19 @@ class Camera {
             float speed, 
             float rotateSpeed
         ); 
+
+        // Constructors with projection
+        Camera(
+            // View + movement params
+            glm::vec3 origin, 
+            float speed, 
+            float rotateSpeed,
+            // Perspective Params
+            float fovY,
+            float aspect, 
+            float zNear,
+            float zFar
+        );
 
         Camera(
             // View + movement params
@@ -53,14 +73,14 @@ class Camera {
         static void standardWalkProcessing(Camera* camera, GLFWwindow* window, float deltaTime);
 
     private:
-        float _pitch;
-        float _yaw;
-        float _speed;
-        float _rotateSpeed;
-        glm::vec3 _origin;
-        glm::vec3 _forward;
-        glm::vec3 _up;
-        glm::vec3 _right;
+        float pitch;
+        float yaw;
+        float speed;
+        float rotateSpeed;
+        glm::vec3 origin;
+        glm::vec3 forward;
+        glm::vec3 up;
+        glm::vec3 right;
         glm::mat4 projection;
 };
 

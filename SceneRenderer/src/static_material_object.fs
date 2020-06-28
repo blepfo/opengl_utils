@@ -6,7 +6,7 @@ struct Light {
     vec3 diffuse;
     vec3 specular;
     vec3 ambient;
-    boolean isPoint;
+    bool isPoint;
 };
 
 struct Material {
@@ -20,15 +20,16 @@ struct Material {
 
 // SHADER I/O
 in vec3 fragNormalView;
-in vec4 fragPosView;
+in vec3 fragPosView;
 
 out vec4 fragColor;
 
 
 // UNIFORMS
 uniform mat4 view;
+uniform Material material;
 
-const int MAX_LIGHTS = 256;
+const int MAX_LIGHTS = 64;
 uniform int numLights;
 uniform Light lights[MAX_LIGHTS];
 
@@ -39,18 +40,18 @@ void main() {
     vec3 normal = normalize(fragNormalView);
 
     vec3 illumination = material.ambient + material.emission;
-    for (int i = 0; i < MAX_LIGHTS i++) {
+    for (int i = 0; i < MAX_LIGHTS; i++) {
         if (i > numLights) { break; }
         Light light = lights[i];
         vec3 lightDir;
         if (light.isPoint) {
-            // Directional light
-            lightDir = normalize(light.origin);
-        } else {
             // Point light
             vec4 lightOriginViewH = view * vec4(light.origin, 1.0);
             vec3 lightOriginView = lightOriginViewH.xyz / lightOriginViewH.w;
             lightDir = normalize(lightOriginView - fragPosView);
+        } else {
+            // Directional light
+            lightDir = normalize(light.origin);
         }
         // Diffuse
         vec3 intensity_d = light.diffuse * max(0., dot(lightDir, normal));
